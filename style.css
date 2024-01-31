@@ -2,6 +2,34 @@ body {
   margin: 0;
 }
 
+.card {
+  border: none;
+}
+
+.card:hover {
+  border: 2px solid;
+}
+
+button.selected {
+  border: 2px solid
+}
+
+button.oro {
+  background-color: #ff0;
+}
+
+button.basto {
+  background-color: #0f0;
+}
+
+button.copa {
+  background-color: #f00;
+}
+
+button.espada {
+  background-color: #ccc;
+}
+
 .game-canvas {
   width: 100%;
   height: 100vw;
