@@ -1,5 +1,13 @@
 class GameManager {
   constructor() {
+    
+    this.player1 = new PlayerManager();
+    this.player2 = new PlayerManager();
+    const startingPlayer = Math.ceil(Math.random()*2);
+    
+  }
+  
+  startGame() {
     const suits = ['oro', 'basto', 'copa', 'espada'];
     const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     this.deck = [];
@@ -8,15 +16,37 @@ class GameManager {
         this.deck.push(new Card(value, suit));
       })
     });
+
+    this.board = [];
+    for (let i = 0; i < 4; i++) {
+      this.board.push(this.drawCard());
+    }
+    document.getElementById('board').innerHTML = this.boardHTML();
     
-    this.player1 = new PlayerManager();
-    this.player2 = new PlayerManager();
-  }
-  
-  startGame() {
-    const startingPlayer = Math.ceil(Math.random()*2);
-    this.player1.deal(this.deck[1]);
+    this.player1.hand = [];
+    for (let i = 0; i < 3; i++) {
+      this.player1.deal(this.drawCard());
+    }
     document.getElementById("hand").innerHTML = this.player1.handHTML();
+
+    this.player2.hand = [];
+    for (let i = 0; i < 3; i++) {
+      this.player2.deal(this.drawCard());
+    }
+
+    document.getElementById("startButton").style = "display: none"
+  }
+
+  drawCard() {
+    console.log(this.deck.length)
+    const randomIndex = Math.floor(Math.random()*this.deck.length);
+    const randomCard = this.deck.splice(randomIndex, 1);
+    console.log(randomCard);
+    return randomCard[0];
+  }
+
+  boardHTML() {
+    return this.board.map( card => card.cardHTML());
   }
 }
 
@@ -45,9 +75,14 @@ class PlayerManager {
   }
   
   handHTML() {
-    return this.hand.map( card => card.cardHTML());
+    return `
+      <div>
+        ${this.hand.map( card => card.cardHTML())}
+      </div>
+      <button>Jugar</button>
+    `;
   }
 }
 
 const game = new GameManager();
-game.startGame();
+//game.startGame();
