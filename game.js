@@ -9,6 +9,7 @@ class GameManager {
 
     this.playButton = document.createElement('button');
     this.playButton.innerHTML = 'Jugar';
+    this.playButton.onclick = function() {game.makePlay()};
     this.playButton.disabled = true;
     
   }
@@ -66,6 +67,63 @@ class GameManager {
     } else {
       card.className += ' selected';
     }
+
+    let sum = 0;
+    this.board.forEach( card => {
+      if (card.className.includes('selected')) sum += parseInt(card.value);
+    });
+    if (sum == 0 && this.player1.selectedCard != null) {
+      this.playButton.disabled = false;
+    } else if (this.player1.selectedCard != null) {
+      sum += parseInt(this.player1.selectedCard.value);
+      if (sum == 15) {
+        this.playButton.disabled = false;
+      } else {
+        this.playButton.disabled = true;
+      }
+    } else {
+      this.playButton.disabled = true;
+    }
+  }
+
+  makePlay() {
+    console.log('making play');
+    const currentCard = this.player1.selectedCard;
+    currentCard.className = currentCard.className.replace(' selected', ' ');
+    this.playButton.disabled = true;
+
+    if (this.board.reduce( (acc, card) => acc || card.className.includes('selected'), false)) {
+      //console.log('recogiendo')
+      currentCard.remove();
+      this.player1.pool.push(currentCard);
+
+      const newBoard = [];
+      this.board.forEach( card => {
+        if (card.className.includes('selected')) {
+          this.player1.pool.push(card);
+          card.remove();
+        } else {
+          newBoard.push(card);
+        }
+      });
+      this.board = newBoard;
+
+      if (this.board.length == 0) this.player1.escoboas += 1;
+
+    } else {
+      //console.log('botando')
+      this.board.push(currentCard);
+      currentCard.zone = 'board';
+      this.boardElement.append(currentCard);
+    }
+
+    const cardHandIndex = this.player1.hand.findIndex( card => card == currentCard);
+    this.player1.hand.splice(cardHandIndex, 1);
+    this.player1.selectedCard = null;
+    
+    if (this.player1.hand.length == 0) {
+      console.log('repartir de nuevo')
+    }
   }
 }
 
@@ -87,6 +145,8 @@ class PlayerManager {
     this.handElement = document.getElementById('hand');
     this.points = 0;
     this.selectedCard = null;
+    this.pool = [];
+    this.escoboas = 0;
   }
   
   deal(card) {
