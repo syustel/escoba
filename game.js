@@ -5,6 +5,8 @@ class GameManager {
     this.player2 = new PlayerManager();
     this.startingPlayer = Math.ceil(Math.random()*2);
 
+    this.boardElement = document.getElementById('board');
+
     this.playButton = document.createElement('button');
     this.playButton.innerHTML = 'Jugar';
     this.playButton.disabled = true;
@@ -17,15 +19,16 @@ class GameManager {
     this.deck = [];
     values.forEach( value => {
       suits.forEach( suit => {
-        this.deck.push(new Card(value, suit));
+        this.deck.push(Card(value, suit));
       })
     });
 
     this.board = [];
     for (let i = 0; i < 4; i++) {
-      this.board.push(this.drawCard());
+      const card = this.drawCard();
+      this.board.push(card);
+      this.boardElement.append(card);
     }
-    this.boardHTML();
     
     this.player1.hand = [];
     for (let i = 0; i < 3; i++) {
@@ -40,56 +43,50 @@ class GameManager {
 
     document.getElementById('playButton').append(this.playButton);
 
-    document.getElementById("startButton").style = "display: none"
+    document.getElementById("startButton").remove();
   }
 
   drawCard() {
-    //console.log(this.deck.length)
     const randomIndex = Math.floor(Math.random()*this.deck.length);
     const randomCard = this.deck.splice(randomIndex, 1);
-    //console.log(randomCard);
     return randomCard[0];
   }
 
-  boardHTML() {
-    document.getElementById('board').innerHTML = this.board.map( card => card.cardHTML());
-  }
-
-  cardPressed(zone, name) {
+  cardPressed(card) {
+    const {zone} = card;
     if (zone == 'hand') {
-      this.player1.selectedCard = this.player1.hand.findIndex( card => card.name == name);
-      this.player1.handHTML();
+      const currentCard = this.player1.selectedCard;
+      if (currentCard != null) {
+        currentCard.className = currentCard.className.replace(' selected', '');
+      }
+      this.player1.selectedCard = card;
+      card.className += ' selected';
+    } else if (card.className.includes('selected')) {
+      card.className = card.className.replace(' selected', '');
     } else {
-      const selectedCard = this.board[this.board.findIndex( card => card.name == name)];
-      selectedCard.selected = !selectedCard.selected;
-      this.boardHTML();
+      card.className += ' selected';
     }
   }
 }
 
-class Card {
-  constructor(value, suit) {
-    this.value = value;
-    this.suit = suit;
-    this.name = `${value<8?value:value+2} de ${suit}`;
-    this.zone = 'board';
-    this.selected = false;
-  }
-  
-  cardHTML(selected = this.selected) {
-    return `
-      <button onclick="game.cardPressed('${this.zone}', '${this.name}')" class="card ${this.suit} ${selected&&'selected'}">
-        ${this.name}
-      </button>
-    `
-  }
+function Card(value, suit) {
+  const element = document.createElement('button')
+  element.name = `${value<8?value:value+2} de ${suit}`;
+  element.innerHTML = element.name;
+  element.value = value;
+  element.suit = suit;
+  element.zone = 'board';
+  element.className = `card ${suit}`;
+  element.onclick = function() {game.cardPressed(this)};
+  return element;
 }
 
 class PlayerManager {
   constructor() {
     this.hand = [];
+    this.handElement = document.getElementById('hand');
     this.points = 0;
-    this.selectedCard = -1;
+    this.selectedCard = null;
   }
   
   deal(card) {
@@ -98,9 +95,7 @@ class PlayerManager {
   }
   
   handHTML(playable) {
-    document.getElementById("hand").innerHTML = `
-      ${this.hand.map( (card, i) => card.cardHTML(i==this.selectedCard))}
-    `;
+    this.hand.forEach( card => this.handElement.append(card))
   }
 }
 
