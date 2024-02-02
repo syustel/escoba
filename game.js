@@ -1,11 +1,14 @@
+import Noob from "./players/noob.js";
+
 class GameManager {
   constructor() {
     
     this.player1 = new PlayerManager();
-    this.player2 = new PlayerManager();
+    this.player2 = new PlayerManager(new Noob());
     this.startingPlayer = Math.ceil(Math.random()*2);
 
     this.boardElement = document.getElementById('board');
+    this.lastPlayElement = document.getElementById('lastPlay');
 
     this.playButton = document.createElement('button');
     this.playButton.innerHTML = 'Jugar';
@@ -87,10 +90,12 @@ class GameManager {
   }
 
   makePlay() {
+    // Player play
     console.log('making play');
     const currentCard = this.player1.selectedCard;
     currentCard.className = currentCard.className.replace(' selected', ' ');
     this.playButton.disabled = true;
+    const lastPlay = [{suit: currentCard.suit, value: currentCard.value}];
 
     if (this.board.reduce( (acc, card) => acc || card.className.includes('selected'), false)) {
       //console.log('recogiendo')
@@ -101,6 +106,7 @@ class GameManager {
       this.board.forEach( card => {
         if (card.className.includes('selected')) {
           this.player1.pool.push(card);
+          lastPlay.push({suit: card.suit, value: card.value});
           card.remove();
         } else {
           newBoard.push(card);
@@ -120,10 +126,54 @@ class GameManager {
     const cardHandIndex = this.player1.hand.findIndex( card => card == currentCard);
     this.player1.hand.splice(cardHandIndex, 1);
     this.player1.selectedCard = null;
+
+    // AI play
+    this.aiPlay(lastPlay);
     
     if (this.player1.hand.length == 0) {
       console.log('repartir de nuevo')
     }
+  }
+
+  aiPlay(lastPlay) {
+    const aiPlay = this.player2.ai.makePlay({
+      board: this.board.map( card => ({suit: card.suit, value: card.value})),
+      hand: this.player2.hand.map( card => ({suit: card.suit, value: card.value})),
+      lastPlay
+    });
+    //console.log(`ai jugo ${aiPlay}`);
+
+    const currentCard = this.player2.hand[aiPlay[0]];
+    
+    if (aiPlay.length > 1) {
+      console.log('ai recogiendo');
+      this.player2.pool.push(currentCard);
+
+      const newBoard = [];
+      const recogidas = [];
+      this.board.forEach( (card, index) => {
+        if (aiPlay.slice(1).includes(index)) {
+          this.player2.pool.push(card);
+          recogidas.push(card);
+          card.remove();
+        } else {
+          newBoard.push(card);
+        }
+      })
+      this.board = newBoard;
+      this.lastPlayElement.innerHTML = `Oponente recogió ${recogidas.map(card => card.name)} con ${currentCard.name}`;
+
+      if (this.board.length == 0) this.player2.escoboas += 1;
+
+    } else {
+      console.log('ai botando');
+      this.board.push(currentCard);
+      currentCard.zone = 'board';
+      this.boardElement.append(currentCard);
+      this.lastPlayElement.innerHTML = `Oponente botó ${currentCard.name}`
+    }
+
+    this.player2.hand.splice(aiPlay[0], 1);
   }
 }
 
@@ -140,13 +190,14 @@ function Card(value, suit) {
 }
 
 class PlayerManager {
-  constructor() {
+  constructor(ai = null) {
     this.hand = [];
     this.handElement = document.getElementById('hand');
     this.points = 0;
     this.selectedCard = null;
     this.pool = [];
     this.escoboas = 0;
+    this.ai = ai;
   }
   
   deal(card) {
