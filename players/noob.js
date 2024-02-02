@@ -10,7 +10,7 @@ export default class Noob {
         for ( let handIndex = 0; handIndex < hand.length; handIndex++) {
             const card = hand[handIndex];
             const sum = this.sumTo(15 - card.value, board);
-            if (sum.length > 1) {
+            if (sum.length > 0) {
                 return [handIndex, ...sum.map( card => card.index)];
             }
         }
