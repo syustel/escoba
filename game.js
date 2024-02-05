@@ -12,15 +12,20 @@ class GameManager {
     this.lastPlayElement = document.getElementById('lastPlay');
     this.opponentElement = document.getElementById('opponentHand');
     this.deckElement = document.getElementById('deck');
-
-    this.playButton = document.createElement('button');
-    this.playButton.innerHTML = 'Jugar';
-    this.playButton.onclick = function() {game.makePlay()};
-    this.playButton.disabled = true;
+    this.playButton = document.getElementById('playButton');
+    this.playButton.onclick = function() {game.startGame()};
     
   }
   
   startGame() {
+    // Resetear juego
+    this.player1.reset();
+    this.player2.reset();
+    this.boardElement.innerHTML = '';
+    this.lastPlayElement.innerHTML = '';
+    this.startingPlayer = this.startingPlayer == 1 ? 2 : 1;
+    
+    // Hacer baraja
     const suits = ['oro', 'basto', 'copa', 'espada'];
     const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     this.deck = [];
@@ -29,7 +34,8 @@ class GameManager {
         this.deck.push(Card(value, suit));
       })
     });
-
+    
+    // Repartir cartas
     this.board = [];
     for (let i = 0; i < 4; i++) {
       const card = this.drawCard();
@@ -37,25 +43,25 @@ class GameManager {
       this.boardElement.append(card);
     }
     
-    this.player1.hand = [];
-    this.player2.hand = [];
     this.dealHands();
     
-    document.getElementById('playButton').append(this.playButton);
+    //document.getElementById('playButton').append(this.playButton);
+    this.playButton.onclick = function() {game.makePlay()};
+    this.playButton.disabled = true;
     
-    document.getElementById("startButton").remove();
+    //document.getElementById("startButton").remove();
     
     if (this.startingPlayer == 2) {
       this.aiPlay([]);
     }
   }
-
+  
   drawCard() {
     const randomIndex = Math.floor(Math.random()*this.deck.length);
     const randomCard = this.deck.splice(randomIndex, 1);
     return randomCard[0];
   }
-
+  
   dealHands() {
     if (this.player1.hand.length != 0 || this.player2.hand.length != 0) return;
     
@@ -78,7 +84,6 @@ class GameManager {
   }
 
   endRound() {
-    console.log('round terminada');
     if (this.lastTook == this.player1) {
       this.lastPlayElement.innerHTML += `Te llevas ${this.board.map( card => card.name)}.`;
     } else {
@@ -86,6 +91,8 @@ class GameManager {
     }
     this.board.forEach( card => this.lastTook.pool.push(card));
     this.score();
+    this.playButton.onclick = function() {game.startGame()};
+    this.playButton.disabled = false;
   }
   
   cardPressed(card) {
@@ -286,7 +293,14 @@ class GameManager {
     this.player2.points += player2Score.points;
     player2Score.newPoints = this.player2.points;
     this.player2.updatePoints();
+
+    // Display results
     this.boardElement.innerHTML = this.scoreTableHTML(player1Score, player2Score);
+    if (this.player1.points >= 21) {
+      this.boardElement.innerHTML = `Has ganado ${this.player1.points} a ${this.player2.points} :D`;
+    } else if (this.player2.points >= 21) {
+      this.boardElement.innerHTML = `Has perdido ${this.player1.points} a ${this.player2.points} :(`;
+    }
   }
   
   primera(pool) {
@@ -387,7 +401,14 @@ class PlayerManager {
   updatePoints() {
     this.pointsElement.innerHTML = `Puntos: ${this.points}`;
   }
+
+  reset() {
+    this.hand = [];
+    this.selectedCard = null;
+    this.pool = [];
+    this.escobas = 0;
+  }
 }
 
 const game = new GameManager();
-game.startGame();
+//game.startGame();
