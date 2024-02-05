@@ -7,18 +7,22 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h5>
-        Mesa
-    </h5>
-	<div id="board"></div>
+	<h3>Oponente</h3>
+	<p id="opponentHand"></p>
+	<p id="opponentPoints">Puntos: 0</p>
 
-	<h5>
-	  Mano
-	</h5>
-	<div id="hand"></div>
+	<div id="board">
+		<h3>Mesa</h3>
+	</div>
+
+	<div id="hand">
+		<h3>Mano</h3>
+	</div>
+	<p id="playerPoints">Puntos: 0</p>
 
 	<div id="playButton"></div>
 	<p id="lastPlay"></p>
+	<p id="deck"></p>
 
     <button id="startButton" onclick="game.startGame()">Comenzar</button>
 	<script type="module" src="game.js"></script>
