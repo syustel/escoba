@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "description": "simulacion de estrategias para el juego de la escoba",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "start": "npx tsx index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "ts-node": "^10.9.2",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   }
 }

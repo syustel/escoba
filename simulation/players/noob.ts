@@ -1,10 +1,10 @@
-import { card, player } from "./player-interface";
+import { Card, Player } from "../player-interface";
 
-export default class Noob implements player {
+export default class Noob implements Player {
     makePlay(gameState: {
-        board: card[];
-        hand: card[];
-        lastPlay: card[];
+        board: Card[];
+        hand: Card[];
+        lastPlay: Card[];
     }): number[] {
         const { board, hand } = gameState;
         board.forEach( (card, index) => card.index = index);
@@ -21,7 +21,7 @@ export default class Noob implements player {
         return [0];
     }
 
-    sumTo(target: number, board: card[]): card[] {
+    sumTo(target: number, board: Card[]): Card[] {
         if (board.length == 0) return [];
 
         for (let i = 0; i < board.length; i++) {
