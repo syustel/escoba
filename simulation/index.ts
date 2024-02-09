@@ -1,5 +1,6 @@
 import Noob from "./players/noob";
 import { Card, Player, Suit } from "./player-interface";
+import GreedyTaker from "./players/greedyTaker";
 
 interface PlayerManager {
     ai: Player,
@@ -22,6 +23,7 @@ function playGame(player1ai: Player, player2ai: Player, verbosity: boolean = fal
         points: 0,
         pool: []
     };
+    const playerOrder = [player1, player2];
 
     while ( (player1.points < 21 && player2.points < 21) || player1.points == player2.points) {
         // Round
@@ -44,7 +46,6 @@ function playGame(player1ai: Player, player2ai: Player, verbosity: boolean = fal
             board.push(drawCard(deck));
         }
         verbosity && console.log({board})
-        const playerOrder = [player1, player2];
         playerOrder.forEach( player => player.pool = []);
         let lastTook = 0;
         
@@ -131,6 +132,7 @@ function playGame(player1ai: Player, player2ai: Player, verbosity: boolean = fal
             player1.points++
         } else player2.points++;
 
+        playerOrder.push(playerOrder.splice(0, 1)[0]);
     }
 
 
@@ -166,5 +168,47 @@ function primera(pool: Card[]): number {
     return highs.oro + highs.basto + highs.copa + highs.espada;
 }
 
-console.log('starting game')
-console.log(playGame(new Noob(), new Noob()))
+const p1 = new Noob();
+const g1 = new GreedyTaker();
+const g2 = new GreedyTaker(['7velo', 'cartas', 'oros'])
+const wins = [0, 0];
+const reps = 100000
+console.log('starting simulation');
+for (let i = 0; i < reps; i ++) {
+    const result = playGame(g1, g2);
+    if (result[0] > result[1]) {
+        wins[0]++;
+    } else {
+        wins[1]++;
+    }
+}
+console.log(wins.map( win => win*100/reps));
+//*/
+
+/*console.log('simulation');
+const gt = new GreedyTaker();
+const play = gt.makePlay({
+    board: [
+        {
+            value: 8,
+            suit: 'basto'
+        },
+        {
+            value: 2,
+            suit: 'basto'
+        }
+    ],
+    hand: [
+       {
+            value: 5,
+            suit: 'oro'
+        },
+        {
+            value: 7,
+            suit: 'espada'
+        }
+    ],
+    lastPlay: []
+})
+console.log(play)
+//*/
