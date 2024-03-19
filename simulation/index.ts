@@ -1,6 +1,7 @@
 import Noob from "./players/noob";
 import { Card, Player, Suit } from "./player-interface";
 import GreedyTaker from "./players/greedyTaker";
+import GreedyTakerCautiousDiscard from "./players/greedyTakerCautiousDiscard";
 
 interface PlayerManager {
     ai: Player,
@@ -170,12 +171,13 @@ function primera(pool: Card[]): number {
 
 const p1 = new Noob();
 const g1 = new GreedyTaker();
+const gtcd = new GreedyTakerCautiousDiscard();
 const g2 = new GreedyTaker(['7velo', 'cartas', 'oros'])
 const wins = [0, 0];
-const reps = 100000
+const reps = 10000;
 console.log('starting simulation');
 for (let i = 0; i < reps; i ++) {
-    const result = playGame(g1, g2);
+    const result = playGame(gtcd, g1);
     if (result[0] > result[1]) {
         wins[0]++;
     } else {
@@ -186,25 +188,30 @@ console.log(wins.map( win => win*100/reps));
 //*/
 
 /*console.log('simulation');
-const gt = new GreedyTaker();
-const play = gt.makePlay({
+//const gt = new GreedyTaker();
+const gtcd = new GreedyTakerCautiousDiscard();
+const play = gtcd.makePlay({
     board: [
         {
-            value: 8,
+            value: 10,
             suit: 'basto'
         },
         {
-            value: 2,
+            value: 7,
             suit: 'basto'
         }
     ],
     hand: [
-       {
-            value: 5,
-            suit: 'oro'
+        {
+            value: 4,
+            suit: 'espada'
         },
         {
             value: 7,
+            suit: 'oro'
+        },
+        {
+            value: 9,
             suit: 'espada'
         }
     ],
