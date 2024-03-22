@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "ES6",
+    "noImplicitAny": true,
+    "target": "ES6",
+    "esModuleInterop": true,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "outDir": "../players",
+    "rootDir": "./players",
+    "moduleResolution": "Node"
+  },
+  "include": ["./players/**/*"]
+}
