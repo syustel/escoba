@@ -1,4 +1,4 @@
-import { Card } from "../player-interface";
+import { Card } from "./player-interface";
 
 export default function sumTo(target: number, board: Card[]): Card[][] {
     if (board.length == 0) return [];

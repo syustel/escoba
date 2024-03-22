@@ -1,4 +1,4 @@
-import { Card, Player } from "../player-interface";
+import { Card, Player } from "./player-interface";
 import sumTo from "./sumTo";
 
 type Priority = 'cartas' | '7velo' | 'oros' | 'escoba';

@@ -1,4 +1,4 @@
-import { Card, Player } from "../player-interface";
+import { Card, Player } from "./player-interface";
 
 export default class Noob implements Player {
     makePlay(gameState: {

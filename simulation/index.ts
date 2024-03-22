@@ -1,5 +1,5 @@
 import Noob from "./players/noob";
-import { Card, Player, Suit } from "./player-interface";
+import { Card, Player, Suit } from "./players/player-interface";
 import GreedyTaker from "./players/greedyTaker";
 import GreedyTakerCautiousDiscard from "./players/greedyTakerCautiousDiscard";
 

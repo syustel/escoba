@@ -7,7 +7,9 @@
     "removeComments": false,
     "preserveConstEnums": true,
     "sourceMap": false,
-    "outDir": "../players"
+    "outDir": "../players",
+    "rootDir": "./players",
+    "moduleResolution": "Node"
   },
-  "include": ["players/**/*"]
+  "include": ["./players/**/*"]
 }
