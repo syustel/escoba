@@ -1,10 +1,15 @@
 import Noob from "./players/noob.js";
+import GreedyTaker from './players/greedyTaker.js';
+import GreedyTakerCautiousDiscard from './players/greedyTakerCautiousDiscard.js';
+
+console.log('a')
+const choosedOpponent = new URLSearchParams(document.location.search).get('opponent');
 
 class GameManager {
-  constructor() {
+  constructor(opponent) {
     
     this.player1 = new PlayerManager();
-    this.player2 = new PlayerManager(new Noob());
+    this.player2 = new PlayerManager(opponent);
     this.startingPlayer = Math.ceil(Math.random()*2);
     this.lastTook = null;
 
@@ -410,5 +415,17 @@ class PlayerManager {
   }
 }
 
-const game = new GameManager();
-//game.startGame();
+let game;
+console.log(choosedOpponent)
+if (choosedOpponent == 'noob') {
+  game = new GameManager(new Noob());
+  game.startGame();
+} else if (choosedOpponent == 'greedy') {
+  game = new GameManager(new GreedyTaker());
+  game.startGame();
+} else if (choosedOpponent == 'cautious') {
+  game = new GameManager(new GreedyTakerCautiousDiscard());
+  game.startGame();
+} else {
+  console.log('opponent not found')
+}
