@@ -1,5 +1,5 @@
 import { Card, Player } from "./player-interface";
-import sumTo from "./sumTo";
+import sumTo from "./sumTo.js";
 
 type Priority = 'cartas' | '7velo' | 'oros' | 'escoba';
 

@@ -1,4 +1,4 @@
-import sumTo from "./sumTo";
+import sumTo from "./sumTo.js";
 export default class GreedyTakerCautiousDiscard {
     constructor(priorities = ['7velo', 'escoba', 'cartas', 'oros']) {
         this.priorities = priorities;
